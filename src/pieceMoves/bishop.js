@@ -14,7 +14,7 @@ export default function bishop(pieceColor, board, prevPos, possiblePos, goOutOfL
                 }else{
                   possiblePos.push(newPos)
                   prevPos = newPos
-                }//test
+                }//test com
             }
             
                         //8 oclock
