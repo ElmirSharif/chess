@@ -19,14 +19,13 @@ export default function App() {
 */
   //const [board, setBoard] =
   const lookUpTable = [
-    ["",""],
-    ["\u2659","\u265F"],
-    ["\u2658","\u265E"],
-    ["\u2657","\u265D"],
-    ["\u2656","\u265C"],
-    ["\u2655","\u265B"],
-    
-    ["\u2654","\u265A"]
+    ["blank","blank", "blank"],
+    ["w-pawn","b-pawn"],
+    ["w-knight","b-knight"],
+    ["w-bishop","b-bishop"],
+    ["w-rook","b-rook"],
+    ["w-queen","b-queen"],
+    ["w-king","b-king"]
 
   ]
   const [pos, setPos] = useState("")
@@ -80,7 +79,7 @@ export default function App() {
 function test() {
   //0 = white
   //1 = black
-  possibleMoves([7,3], 4, 0)
+  possibleMoves([5,3], 3, 0)
 }
   function possibleMoves(pos, piece, color) {
     let pieceColor = color
@@ -144,7 +143,8 @@ function test() {
           return(
              <ChessBox rowIndex={rowIndex} colIndex={colIndex} selected={col[2]}>
             {
-          lookUpTable[col[1]][col[0]] //make this an image instead of text
+
+          <img src={"/chessicons/" + lookUpTable[col[1]][col[0]] +".png"}/>
           }
           </ChessBox>)
         })

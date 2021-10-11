@@ -11,12 +11,17 @@ export default function ChessBox(props) {
     //make a new component which is a red circle and render if the move is an option
     return (
         <span>
-        {color ? <td tw="w-10 h-10 bg-yellow-900 text-center">
+            
+        {color ? <td tw="w-10 h-10 bg-yellow-900 text-center ">
+        <span tw="bg-red-700 rounded-full w-10 h-10">
+            
             {props.children}
-        </td>: <td tw="w-10 h-10 bg-yellow-100 text-center">
+
+            </span>
+        </td>: <td tw="w-10 h-10 bg-yellow-100 text-center z-20">
             {props.children}
         </td>}
-        
+    
         </span>
     )
 }
