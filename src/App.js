@@ -6,7 +6,7 @@ import knight from './pieceMoves/knight'
 import pawn from './pieceMoves/pawn'
 import bishop from './pieceMoves/bishop'
 import rook from './pieceMoves/rook'
-import queen from './pieceMoves/queen'
+import queen from './pieceMoves/queen';
 
 export default function App() {
   /*
@@ -48,16 +48,7 @@ export default function App() {
     [ [0, 4, false],[0, 2, false],[0, 3, false],[0,5 , false],[0,6 , false],[0, 3, false],[0, 2, false],[0, 4, false] ]
     ])
 
-
-
-    function renderPiece(col) {
-      
-      if (col[0] === 2) {
-        return <span  style={col[2] ? {"backgroundColor": "red"} : {"backgroundColor": ""}}>{"\u00A0\u00A0\u00A0\u00A0\u00A0"}</span>
-      } else {
-        return <span  style={col[2] ? {"backgroundColor": "red"} : {"backgroundColor": ""}}> {lookUpTable[col[1]][col[0]]}</span>
-      }
-    }
+//[color, piece, isSelected]
 
     function movePiece(fromA, fromB, toA, toB) {
       let temp = board
@@ -79,7 +70,7 @@ export default function App() {
 function test() {
   //0 = white
   //1 = black
-  possibleMoves([5,3], 3, 0)
+  possibleMoves([3,3], 3, 0)
 }
   function possibleMoves(pos, piece, color) {
     let pieceColor = color
@@ -90,6 +81,9 @@ function test() {
     let prevPos = pos
     let goOutOfLoop = false
     /*
+  0=whte
+  1=black
+
   1: pawn      DONE
   2: knight    DONE
   3: bishop    DONE
@@ -123,11 +117,18 @@ function test() {
       default:
         break;
     }
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        tempBoard[i][j][2] = false
+      }
+      
+    }
     for (let i = 0; i < possiblePos.length; i++) {
       const element = possiblePos[i];
       console.log(element)
-      //tempBoard[element[0]][element[1]][2] = true       
+      tempBoard[element[0]][element[1]][2] = true       
     }
+    //console.log(tempBoard)
     setBoard([...tempBoard])
   }
 
@@ -141,12 +142,12 @@ function test() {
         return(
         <tr>{row.map((col, colIndex) => {
           return(
-             <ChessBox rowIndex={rowIndex} colIndex={colIndex} selected={col[2]}>
-            {
-
-          <img src={"/chessicons/" + lookUpTable[col[1]][col[0]] +".png"}/>
-          }
-          </ChessBox>)
+          //something wrong here ===================================================================================
+          <ChessBox piece={col[1]} color={col[0]} rowIndex={rowIndex} colIndex={colIndex} selected={col[2]} possibleMoves={possibleMoves}>
+            <img height={"35px"} src={"/chessicons/" + lookUpTable[col[1]][col[0]] +".png"}/>
+          </ChessBox>
+          )
+          
         })
       }
         </tr>
