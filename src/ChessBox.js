@@ -5,25 +5,34 @@ import React from 'react'
 export default function ChessBox(props) {
     const colIndex = props.colIndex
     const rowIndex = props.rowIndex
-    const selected = props.selected
+    const potential = props.potential
     const possibleMoves = props.possibleMoves
     const piece = props.piece
     const color = props.color
 
-    const boxColor = (!!(((rowIndex % 2) + (colIndex % 2)) % 2) ? "900" : "100")
+    const selected = props.selected
+    const movePiece = props.movePiece
+
+    const boxColor = (!!(((rowIndex % 2) + (colIndex % 2)) % 2) ? "700" : "100")
     //make a new component which is a red circle and render if the move is an option
 
-    function test() {
-        if(color !== 2) {
+    function isClicked() {
+        if(potential){
+            movePiece(selected[0], selected[1], rowIndex, colIndex)
+
+
+        }
+        if(color !== 2) { //if not empty
             possibleMoves([rowIndex,colIndex], piece, color)
+            //save to state
         }
     }
     return (
         <>
     
         <td className={"w-10 h-10 bg-yellow-"+ boxColor +" text-center"}>
-        <span className={selected && "bg-red-700 rounded-full w-80 h-80"}>
-        <button onClick={test}>
+        <span className={potential && "bg-red-700 rounded-full w-10 h-10"}>
+        <button onClick={isClicked}>
             {props.children}
             </button>
 

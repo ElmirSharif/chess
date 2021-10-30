@@ -48,13 +48,16 @@ export default function App() {
     [ [0, 4, false],[0, 2, false],[0, 3, false],[0,5 , false],[0,6 , false],[0, 3, false],[0, 2, false],[0, 4, false] ]
     ])
 
-//[color, piece, isSelected]
+//[color, piece, isPotential]
+
+const [selected, setSelected] = useState([null,null])
+
 
     function movePiece(fromA, fromB, toA, toB) {
+      clearPossible(board, setBoard)
       let temp = board
       temp[toA][toB] = temp[fromA][fromB] //moving piece to new place
       temp[fromA][fromB] = [2,0] ///setting the old place as empty
-      console.log(temp)
       setBoard([...temp])
     }
 
@@ -70,8 +73,22 @@ export default function App() {
 function test() {
   //0 = white
   //1 = black
-  possibleMoves([3,3], 3, 0)
+  possibleMoves([3,3], 5, 0)
 }
+
+
+function clearPossible(board, setBoard) {
+  let tempBoard = board
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      tempBoard[i][j][2] = false
+    }
+    
+  }
+  setBoard([...tempBoard])
+  
+}
+
   function possibleMoves(pos, piece, color) {
     let pieceColor = color
     let possiblePos = []
@@ -117,15 +134,12 @@ function test() {
       default:
         break;
     }
-    for (let i = 0; i < 8; i++) {
-      for (let j = 0; j < 8; j++) {
-        tempBoard[i][j][2] = false
-      }
-      
-    }
+
+    setSelected([xpos, ypos])
+    clearPossible(board, setBoard)
+
     for (let i = 0; i < possiblePos.length; i++) {
       const element = possiblePos[i];
-      console.log(element)
       tempBoard[element[0]][element[1]][2] = true       
     }
     //console.log(tempBoard)
@@ -143,8 +157,8 @@ function test() {
         <tr>{row.map((col, colIndex) => {
           return(
           //something wrong here ===================================================================================
-          <ChessBox piece={col[1]} color={col[0]} rowIndex={rowIndex} colIndex={colIndex} selected={col[2]} possibleMoves={possibleMoves}>
-            <img height={"35px"} src={"/chessicons/" + lookUpTable[col[1]][col[0]] +".png"}/>
+          <ChessBox piece={col[1]} color={col[0]} rowIndex={rowIndex} colIndex={colIndex} potential={col[2]} possibleMoves={possibleMoves} selected={selected} movePiece={movePiece}>
+            <img className="h-10" src={"/chessicons/" + lookUpTable[col[1]][col[0]] +".png"}/>
           </ChessBox>
           )
           
