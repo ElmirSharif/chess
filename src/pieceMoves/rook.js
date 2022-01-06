@@ -1,5 +1,6 @@
 
-export default function rook(pieceColor, board, prevPos, possiblePos, goOutOfLoop) {
+export default function rook(pieceColor, board, prevPos, goOutOfLoop) {
+let possiblePos = []
     goOutOfLoop = false
     let newPosR = prevPos
     
@@ -34,7 +35,6 @@ export default function rook(pieceColor, board, prevPos, possiblePos, goOutOfLoo
             goOutOfLoop = true
           }
           if (!goOutOfLoop) {
-            console.info(prevPos)
             let newPosR = [prevPos[0]-i,prevPos[1]]
             if (newPosR[0]===0) {
               goOutOfLoop=true
@@ -106,4 +106,5 @@ export default function rook(pieceColor, board, prevPos, possiblePos, goOutOfLoo
           } 
           
         }
+        return possiblePos
 }

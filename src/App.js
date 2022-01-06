@@ -1,12 +1,10 @@
-/** @jsxImportSource @emotion/react */
-import tw from "twin.macro";
 import React, {useState, useEffect} from 'react'
 import ChessBox from './ChessBox'
-import knight from './pieceMoves/knight'
-import pawn from './pieceMoves/pawn'
-import bishop from './pieceMoves/bishop'
-import rook from './pieceMoves/rook'
-import queen from './pieceMoves/queen';
+
+import possiblePieceMoves from './functions/possiblePieceMoves'
+import isKingAttacked from './functions/isKingAttacked'
+import clearPossible from './functions/clearPossible'
+import tempMove from './functions/tempMove'
 
 export default function App() {
   /*
@@ -17,7 +15,7 @@ export default function App() {
   5: queen
   6: king
 */
-  //const [board, setBoard] =
+
   const lookUpTable = [
     ["blank","blank", "blank"],
     ["w-pawn","b-pawn"],
@@ -28,14 +26,37 @@ export default function App() {
     ["w-king","b-king"]
 
   ]
-  const [pos, setPos] = useState("")
-  
+  const [moveHistory, setMoveHistory] = useState([])
+  const [emptyMoves, setEmptyMoves] = useState(0)
+
+
+  function cutArray(array, from, till) {
+    let newArray=[]
+    for (let i = from; i < till; i++) {
+      const element = array[i];    
+      newArray.push(element)
+    }
+    console.log(newArray)
+  }
+  useEffect(() => { //50 move draw rule
+    if(emptyMoves === 50) {
+      console.log("DRAW")
+    }
+  }, [emptyMoves])
+  //   useEffect(() => {
+  //     for (let i = 0; i < 50; i=+3) {
+  //     console.log(i)
+  //     console.log(cutArray(moveHistory, moveHistory.length-i, moveHistory.length))
+  //     console.log(cutArray(moveHistory, moveHistory.length-i-i, moveHistory.length-i))
+  //     if(cutArray(moveHistory, moveHistory.length-i, moveHistory.length)===cutArray(moveHistory, moveHistory.length-i-i, moveHistory.length-i)) {
+  //       console.log("draw")
+  //     }
+  //  }
+  //     }, [moveHistory])
   const [board, setBoard] = useState([
-    [ [1,4, false],[1,2, false],[1,3 , false],[1,5 , false],[1,6 , false],[1,3 , false],[1,2 , false],[1,4 , false]],
+    [ [1,4, false, "rb1"],[1,2, false, "nb1"],[1,3 , false, "bb1"],[1,5 , false, "qb1"],[1,6 , false, "kb1"],[1,3 , false, "bb2"],[1,2 , false, "nb2"],[1,4 , false, "rb2"]],
 
-    [ [1,1 , false],[1,1, false],[1,1, false],[1,1, false],[1,1, false],[1,1, false],[1,1, false],[1,1 , false]],
-
-    [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false]],
+    [ [1,1 , false, "pb1"],[1,1, false, "pb2"],[1,1, false, "pb3"],[1,1, false, "pb4"],[1,1, false, "pb5"],[1,1, false, "pb6"],[1,1, false, "pb7"],[1,1 , false, "pb8"]],
 
     [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false]],
 
@@ -43,105 +64,84 @@ export default function App() {
 
     [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false]],
 
-    [ [0, 1, false],[0, 1, false],[0, 1, false],[0, 1, false],[0, 1, false],[0, 1, false],[0, 1, false],[0, 1, false] ],
+    [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false]],
 
-    [ [0, 4, false],[0, 2, false],[0, 3, false],[0,5 , false],[0,6 , false],[0, 3, false],[0, 2, false],[0, 4, false] ]
+    [ [0, 1, false, "pw1"],[0, 1, false, "pw2"],[0, 1, false, "pw3"],[0, 1, false, "pw4"],[0, 1, false, "pw5"],[0, 1, false, "pw6"],[0, 1, false, "pw7"],[0, 1, false, "pw8"] ],
+
+    [ [0, 4, false, "rw1"],[0, 2, false, "nw1"],[0, 3, false, "bw1"],[0,5 , false, "qw1"],[0,6 , false, "kw1"],[0, 3, false, "bw2"],[0, 2, false, "nw2"],[0, 4, false, "rw2"] ]
     ])
 
-//[color, piece, isPotential]
-
+//[color, piece, isPotential, piece code]
 const [selected, setSelected] = useState([null,null])
 
 
-    function movePiece(fromA, fromB, toA, toB) {
-      clearPossible(board, setBoard)
-      let temp = board
-      temp[toA][toB] = temp[fromA][fromB] //moving piece to new place
-      temp[fromA][fromB] = [2,0] ///setting the old place as empty
-      setBoard([...temp])
-    }
-
-   function handleInput(e) {
-     setPos(e.target.value)
-   }
-
-  function runMove() {
-    movePiece(pos[0],pos[1],pos[2],pos[3])
+function movePiece(fromA, fromB, toA, toB) {
+  const pieceCode = board[fromA][fromB][3]
+  //Checking if piece has been captured AND pawn has not been moved(50move draw rule)
+  if(board[toA][toB][0] === 2 && board[fromA][fromB][1] !== 1){
+    setEmptyMoves(prev => prev + 1)
+  } else {
+    setEmptyMoves(0)
   }
-    
-
-function test() {
-  //0 = white
-  //1 = black
-  possibleMoves([3,3], 5, 0)
-}
-
-
-function clearPossible(board, setBoard) {
-  let tempBoard = board
-  for (let i = 0; i < 8; i++) {
-    for (let j = 0; j < 8; j++) {
-      tempBoard[i][j][2] = false
-    }
-    
-  }
-  setBoard([...tempBoard])
   
+  setBoard([...clearPossible(board)])
+
+  const temp = tempMove(fromA, fromB, toA, toB, board)
+
+  //actually moving
+
+
+  //////////////////////////////////////
+  setMoveHistory(prev => [...prev, ...[[pieceCode, toA, toB]]])//adding move to move history
+  isKingAttacked(1, temp, moveHistory) && console.log("BLACK IS IN CHECK")
+  isKingAttacked(0, temp, moveHistory) && console.log("WHITE IS IN CHECK")
+  setBoard([...temp])//updating board
 }
+
 
   function possibleMoves(pos, piece, color) {
-    let pieceColor = color
-    let possiblePos = []
+    //color is 0 when white and 1 when black
+    //piece is a number
+    const isBlack = !!color
+    const isWhite = !isBlack
+    
+
+    let possiblePos = possiblePieceMoves(pos, piece, color, board, moveHistory)
+
     const xpos = pos[0]
     const ypos = pos[1]
-    let tempBoard = board
-    let prevPos = pos
-    let goOutOfLoop = false
-    /*
-  0=whte
-  1=black
+    let tempBoard = board.slice()
 
-  1: pawn      DONE
-  2: knight    DONE
-  3: bishop    DONE
-  4: rook      DONE
-  5: queen     
-  6: king      DONE
-
-*/
-    switch (piece) {
-      case 1:
-        pawn(pieceColor, board, prevPos, possiblePos)
-        break;
-      case 2:
-        
-        knight(pieceColor, board, prevPos, possiblePos)
-        
-        break;
-      case 3:
-        bishop(pieceColor, board, prevPos, possiblePos, goOutOfLoop, pos)
-        break;
-      case 4:
-        rook(pieceColor, board, prevPos, possiblePos, goOutOfLoop)
-        
-      
-        break;
-      case 5:
-        queen(pieceColor, board, prevPos, possiblePos, goOutOfLoop, pos)
-        break;
-      case 6:
-        
-      default:
-        break;
-    }
-
+    
     setSelected([xpos, ypos])
-    clearPossible(board, setBoard)
+    setBoard([...clearPossible(board)])
 
     for (let i = 0; i < possiblePos.length; i++) {
+      //if king, and king is in his orignal place, and king can castle and positions between king and rook are not attacked
       const element = possiblePos[i];
-      tempBoard[element[0]][element[1]][2] = true       
+      //const futureBoard = tempMove(xpos, ypos, element[0], element[1], [], board)
+       
+      const futureBoard = tempMove(xpos, ypos, element[0], element[1], tempBoard)
+      const isWhitePotentiallyAttacked = isKingAttacked(0, futureBoard, moveHistory)
+      const isBlackPotentiallyAttacked = isKingAttacked(1, futureBoard, moveHistory)
+
+      if(!((isWhitePotentiallyAttacked && isWhite) || (isBlackPotentiallyAttacked && isBlack))) {
+        tempBoard[element[0]][element[1]][2] = true  //sets the places that have red circles
+      }
     }
+    //Checking if castle is allowed by checking if d1 f1 d8 f8 are attacked (inbetween)
+    for (let i = 0; i <= 7; i += 7) { //check both black and white
+     //if king is in original place and is king
+     //check if left or right of king is attacked, if so don't allow castle
+        if(piece === 6 && ypos === 4 && tempBoard[i][3][2] === false) {
+          tempBoard[i][2][2] = false
+        }
+        if(piece === 6 && ypos === 4 && tempBoard[i][5][2] === false) {
+          tempBoard[i][6][2] = false
+        }
+      }
+      
+    
     //console.log(tempBoard)
     setBoard([...tempBoard])
   }
@@ -156,9 +156,8 @@ function clearPossible(board, setBoard) {
         return(
         <tr>{row.map((col, colIndex) => {
           return(
-          //something wrong here ===================================================================================
-          <ChessBox piece={col[1]} color={col[0]} rowIndex={rowIndex} colIndex={colIndex} potential={col[2]} possibleMoves={possibleMoves} selected={selected} movePiece={movePiece}>
-            <img className="h-10" src={"/chessicons/" + lookUpTable[col[1]][col[0]] +".png"}/>
+          <ChessBox board={board} col={col} rowIndex={rowIndex} colIndex={colIndex} possibleMoves={possibleMoves} selected={selected} movePiece={movePiece}>
+            <img alt="chess piece" className="h-10" src={"/chessicons/" + lookUpTable[col[1]][col[0]] +".png"}/>
           </ChessBox>
           )
           
@@ -170,9 +169,6 @@ function clearPossible(board, setBoard) {
 
       }
       </table>
-      <button onClick={runMove}>Move</button>
-      <input value={pos} onChange={handleInput}></input>
-      <button onClick={test}>TEST BUTTON</button>
     </div>
   )
 }

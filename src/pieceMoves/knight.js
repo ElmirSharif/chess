@@ -1,4 +1,5 @@
-export default function knight(pieceColor, board, prevPos, possiblePos) {
+export default function knight(pieceColor, board, prevPos) {
+  let possiblePos = []
     let newPosN = []
         newPosN.push([prevPos[0]-1,prevPos[1]-2])
         newPosN.push([prevPos[0]-2,prevPos[1]-1])
@@ -18,4 +19,5 @@ export default function knight(pieceColor, board, prevPos, possiblePos) {
           }
           
         }
+        return possiblePos
 }

@@ -1,28 +1,28 @@
-/** @jsxImportSource @emotion/react */
-import tw from "twin.macro";
 import React from 'react'
 
 export default function ChessBox(props) {
+    const movePiece = props.movePiece
+    const col = props.col
     const colIndex = props.colIndex
     const rowIndex = props.rowIndex
-    const potential = props.potential
+    const potential = col[2]
     const possibleMoves = props.possibleMoves
-    const piece = props.piece
-    const color = props.color
+    const piece = col[1] //int value associated with a type of piece that we are about to capture(except for en passant)
+    const color = col[0] //color of the piece
 
+    const board = props.board
     const selected = props.selected
-    const movePiece = props.movePiece
-
     const boxColor = (!!(((rowIndex % 2) + (colIndex % 2)) % 2) ? "700" : "100")
     //make a new component which is a red circle and render if the move is an option
-
+    //row-updown
+    //coloumn-rightleft
+    //selected-from
+    //colIndex, rowIndex- to
     function isClicked() {
-        if(potential){
+        if(potential){ //if the place is a potental move of a piece
             movePiece(selected[0], selected[1], rowIndex, colIndex)
-
-
-        }
-        if(color !== 2) { //if not empty
+        } else if(color !== 2) { //if not empty
+            
             possibleMoves([rowIndex,colIndex], piece, color)
             //save to state
         }

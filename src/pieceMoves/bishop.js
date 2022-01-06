@@ -1,4 +1,5 @@
-export default function bishop(pieceColor, board, prevPos, possiblePos, goOutOfLoop, pos) {
+export default function bishop(pieceColor, board, prevPos, goOutOfLoop, pos) {
+  let possiblePos = []
             //2 oclock
         
             while (!(prevPos[0] === 0 || prevPos[1] === 7)&!goOutOfLoop) {
@@ -73,4 +74,5 @@ export default function bishop(pieceColor, board, prevPos, possiblePos, goOutOfL
                   prevPos = newPos
                 }
           }
+          return possiblePos
 }
