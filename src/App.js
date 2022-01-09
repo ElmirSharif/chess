@@ -5,6 +5,7 @@ import possiblePieceMoves from './functions/possiblePieceMoves'
 import isKingAttacked from './functions/isKingAttacked'
 import clearPossible from './functions/clearPossible'
 import tempMove from './functions/tempMove'
+import compareArray from './functions/compareArray'
 
 export default function App() {
   /*
@@ -28,6 +29,7 @@ export default function App() {
   ]
   const [moveHistory, setMoveHistory] = useState([])
   const [emptyMoves, setEmptyMoves] = useState(0)
+  const [boardHistory, setBoardHistory] = useState([])
 
 
   function cutArray(array, from, till) {
@@ -38,21 +40,37 @@ export default function App() {
     }
     console.log(newArray)
   }
+  useEffect(() => {
+    let counter = 0
+    console.log(boardHistory)
+    let repeatedBoard = boardHistory[boardHistory.length-1]
+    for (let i = boardHistory.length-1; i > 0; i=i-1) {
+      if(compareArray(boardHistory[i],boardHistory[boardHistory.length-1])){
+        counter++
+        console.log(counter)
+        if (counter===3) {
+          console.log("draw")
+        }
+      }
+    }
+    console.log("--------------")
+  }, [boardHistory, compareArray])
   useEffect(() => { //50 move draw rule
     if(emptyMoves === 50) {
       console.log("DRAW")
     }
   }, [emptyMoves])
-  //   useEffect(() => {
-  //     for (let i = 0; i < 50; i=+3) {
-  //     console.log(i)
-  //     console.log(cutArray(moveHistory, moveHistory.length-i, moveHistory.length))
-  //     console.log(cutArray(moveHistory, moveHistory.length-i-i, moveHistory.length-i))
-  //     if(cutArray(moveHistory, moveHistory.length-i, moveHistory.length)===cutArray(moveHistory, moveHistory.length-i-i, moveHistory.length-i)) {
-  //       console.log("draw")
-  //     }
-  //  }
-  //     }, [moveHistory])
+
+useEffect(() => {
+  board.forEach(y => {
+    y.forEach(x => {
+
+    })
+  })
+
+
+}, [possibleMoves, board])
+  
   const [board, setBoard] = useState([
     [ [1,4, false, "rb1"],[1,2, false, "nb1"],[1,3 , false, "bb1"],[1,5 , false, "qb1"],[1,6 , false, "kb1"],[1,3 , false, "bb2"],[1,2 , false, "nb2"],[1,4 , false, "rb2"]],
 
@@ -96,8 +114,11 @@ function movePiece(fromA, fromB, toA, toB) {
   isKingAttacked(1, temp, moveHistory) && console.log("BLACK IS IN CHECK")
   isKingAttacked(0, temp, moveHistory) && console.log("WHITE IS IN CHECK")
   setBoard([...temp])//updating board
+  setBoardHistory(prev=> [...prev, ...[[temp]]])//adding new board to board History
 }
 
+//[1, 2, 3]
+//if(arrayA[i] === arrayB[i]){
 
   function possibleMoves(pos, piece, color) {
     //color is 0 when white and 1 when black
