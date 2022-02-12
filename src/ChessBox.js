@@ -1,4 +1,5 @@
 import React from 'react'
+import possibleMoves from './functions/possibleMoves'
 
 export default function ChessBox(props) {
     const movePiece = props.movePiece
@@ -6,12 +7,13 @@ export default function ChessBox(props) {
     const colIndex = props.colIndex
     const rowIndex = props.rowIndex
     const potential = col[2]
-    const possibleMoves = props.possibleMoves
     const piece = col[1] //int value associated with a type of piece that we are about to capture(except for en passant)
     const color = col[0] //color of the piece
-
     const board = props.board
+    const setBoard = props.setBoard
+    const setSelected = props.setSelected
     const selected = props.selected
+    const moveHistory = props.moveHistory
     const boxColor = (!!(((rowIndex % 2) + (colIndex % 2)) % 2) ? "700" : "100")
     //make a new component which is a red circle and render if the move is an option
     //row-updown
@@ -23,7 +25,9 @@ export default function ChessBox(props) {
             movePiece(selected[0], selected[1], rowIndex, colIndex)
         } else if(color !== 2) { //if not empty
             
-            possibleMoves([rowIndex,colIndex], piece, color)
+            const [newBoard, newSelected] = possibleMoves([rowIndex,colIndex], piece, color, board, moveHistory)
+            setBoard(newBoard)
+            setSelected(newSelected)
             //save to state
         }
     }

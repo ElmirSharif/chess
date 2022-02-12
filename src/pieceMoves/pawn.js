@@ -4,7 +4,7 @@ export default function pawn(pieceColor, board, prevPos, moveHistory) {
         if (board[prevPos[0]-1][prevPos[1]][1]===0) { 
           possiblePos.push([prevPos[0]-1,prevPos[1]])  //moving forward
         }
-        if (prevPos[0]===6&board[prevPos[0]-1][prevPos[1]][0]===2) {
+        if (prevPos[0]===6&board[prevPos[0]-2][prevPos[1]][0]===2) {
           possiblePos.push([prevPos[0]-2,prevPos[1]])  //double move
         }
         if (prevPos[1]!==0) {
@@ -41,7 +41,7 @@ export default function pawn(pieceColor, board, prevPos, moveHistory) {
         if (board[prevPos[0]+1][prevPos[1]][1]===0) { 
           possiblePos.push([prevPos[0]+1,prevPos[1]])  //moving forward
         }
-        if (prevPos[0]===1&board[prevPos[0]+1][prevPos[1]][0]===2) {
+        if (prevPos[0]===1&board[prevPos[0]+2][prevPos[1]][0]===2) {
           possiblePos.push([prevPos[0]+2,prevPos[1]]) //double move
         }
         if (prevPos[1]!==0) {

@@ -4,13 +4,13 @@
 
 - dragging  pieces https://www.freecodecamp.org/news/how-to-add-drag-and-drop-in-react-with-react-beautiful-dnd/
 
--                                                                 fibonacci homework
-
-- we first have to make possibleMoves not change any state itself
-- check for checkmate
-- check for stalemate
+- if rook is captured, king can still castle !Important
+- check for stalemate currently buggy !Important
 - endgame impossible win=draw
 
-
+- request draw button
+- call draw button
 
 - promoting pawns
+
+- bug in pawn code, can capture when it shouldnt

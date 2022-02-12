@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react'
 import ChessBox from './ChessBox'
 
-import possiblePieceMoves from './functions/possiblePieceMoves'
 import isKingAttacked from './functions/isKingAttacked'
 import clearPossible from './functions/clearPossible'
 import tempMove from './functions/tempMove'
 import compareArray from './functions/compareArray'
+import checkForCheckmate from './functions/checkForCheckmate'
+import checkForStalemate from './functions/checkForStalemate'
 
 export default function App() {
   /*
@@ -16,6 +17,8 @@ export default function App() {
   5: queen
   6: king
 */
+
+
 
   const lookUpTable = [
     ["blank","blank", "blank"],
@@ -31,46 +34,61 @@ export default function App() {
   const [emptyMoves, setEmptyMoves] = useState(0)
   const [boardHistory, setBoardHistory] = useState([])
 
+  // function Fibonacci(remLength, numArray) {
+  //   if (numArray.length===1) {
+  //     return Fibonacci(remLength-1,[numArray[0],numArray[0]])
+  //   }
+  //   else if (remLength===1) {
+  //     return numArray
+      
+  //   } else{
+  //     console.log(numArray)
+  //     numArray.push(numArray[numArray.length-1]+numArray[numArray.length-2])
+  //     return Fibonacci(remLength-1,numArray)
+  //   }
+  // }
 
-  function cutArray(array, from, till) {
-    let newArray=[]
-    for (let i = from; i < till; i++) {
-      const element = array[i];    
-      newArray.push(element)
-    }
-    console.log(newArray)
-  }
+
   useEffect(() => {
     let counter = 0
-    console.log(boardHistory)
-    let repeatedBoard = boardHistory[boardHistory.length-1]
+    
     for (let i = boardHistory.length-1; i > 0; i=i-1) {
       if(compareArray(boardHistory[i],boardHistory[boardHistory.length-1])){
         counter++
-        console.log(counter)
+        
         if (counter===3) {
           console.log("draw")
         }
       }
     }
-    console.log("--------------")
-  }, [boardHistory, compareArray])
+  }, [boardHistory])
   useEffect(() => { //50 move draw rule
     if(emptyMoves === 50) {
       console.log("DRAW")
     }
   }, [emptyMoves])
 
-useEffect(() => {
-  board.forEach(y => {
-    y.forEach(x => {
-
-    })
-  })
-
-
-}, [possibleMoves, board])
   
+  const [board, setBoard] = useState([
+    [ [1,4, false, "rb1"],[1,2, false, "nb1"],[1,3 , false, "bb1"],[1,5 , false, "qb1"],[1,6 , false, "kb1"],[1,3 , false, "bb2"],[1,2 , false, "nb2"],[1,4 , false, "rb2"]],
+
+    [ [1,1 , false, "pb1"],[1,1, false, "pb2"],[1,1, false, "pb3"],[1,1, false, "pb4"],[1,1, false, "pb5"],[1,1, false, "pb6"],[1,1, false, "pb7"],[1,1 , false, "pb8"]],
+
+    [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false]],
+
+    [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false]],
+
+    [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false]],
+
+    [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false]],
+
+    [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[0,6 , false, "kw1"],[2, 0, false],[2, 0, false],[2, 0, false]],
+
+    [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false]]
+    ])
+
+
+    /*  
   const [board, setBoard] = useState([
     [ [1,4, false, "rb1"],[1,2, false, "nb1"],[1,3 , false, "bb1"],[1,5 , false, "qb1"],[1,6 , false, "kb1"],[1,3 , false, "bb2"],[1,2 , false, "nb2"],[1,4 , false, "rb2"]],
 
@@ -87,7 +105,7 @@ useEffect(() => {
     [ [0, 1, false, "pw1"],[0, 1, false, "pw2"],[0, 1, false, "pw3"],[0, 1, false, "pw4"],[0, 1, false, "pw5"],[0, 1, false, "pw6"],[0, 1, false, "pw7"],[0, 1, false, "pw8"] ],
 
     [ [0, 4, false, "rw1"],[0, 2, false, "nw1"],[0, 3, false, "bw1"],[0,5 , false, "qw1"],[0,6 , false, "kw1"],[0, 3, false, "bw2"],[0, 2, false, "nw2"],[0, 4, false, "rw2"] ]
-    ])
+    ])*/
 
 //[color, piece, isPotential, piece code]
 const [selected, setSelected] = useState([null,null])
@@ -101,8 +119,7 @@ function movePiece(fromA, fromB, toA, toB) {
   } else {
     setEmptyMoves(0)
   }
-  
-  setBoard([...clearPossible(board)])
+
 
   const temp = tempMove(fromA, fromB, toA, toB, board)
 
@@ -111,61 +128,21 @@ function movePiece(fromA, fromB, toA, toB) {
 
   //////////////////////////////////////
   setMoveHistory(prev => [...prev, ...[[pieceCode, toA, toB]]])//adding move to move history
-  isKingAttacked(1, temp, moveHistory) && console.log("BLACK IS IN CHECK")
-  isKingAttacked(0, temp, moveHistory) && console.log("WHITE IS IN CHECK")
-  setBoard([...temp])//updating board
+  
+  checkForStalemate(temp, moveHistory)
+  checkForCheckmate( temp, moveHistory)
+  // if(checkForCheckmate( temp, moveHistory)===false){
+  //   console.log(checkForStalemate(temp, moveHistory))
+  // } else {
+  //   console.log("checkmate")
+  // }
+  setBoard(clearPossible(temp))//updating board and removing possible moves
   setBoardHistory(prev=> [...prev, ...[[temp]]])//adding new board to board History
 }
 
 //[1, 2, 3]
 //if(arrayA[i] === arrayB[i]){
 
-  function possibleMoves(pos, piece, color) {
-    //color is 0 when white and 1 when black
-    //piece is a number
-    const isBlack = !!color
-    const isWhite = !isBlack
-    
-
-    let possiblePos = possiblePieceMoves(pos, piece, color, board, moveHistory)
-
-    const xpos = pos[0]
-    const ypos = pos[1]
-    let tempBoard = board.slice()
-
-    
-    setSelected([xpos, ypos])
-    setBoard([...clearPossible(board)])
-
-    for (let i = 0; i < possiblePos.length; i++) {
-      //if king, and king is in his orignal place, and king can castle and positions between king and rook are not attacked
-      const element = possiblePos[i];
-      //const futureBoard = tempMove(xpos, ypos, element[0], element[1], [], board)
-       
-      const futureBoard = tempMove(xpos, ypos, element[0], element[1], tempBoard)
-      const isWhitePotentiallyAttacked = isKingAttacked(0, futureBoard, moveHistory)
-      const isBlackPotentiallyAttacked = isKingAttacked(1, futureBoard, moveHistory)
-
-      if(!((isWhitePotentiallyAttacked && isWhite) || (isBlackPotentiallyAttacked && isBlack))) {
-        tempBoard[element[0]][element[1]][2] = true  //sets the places that have red circles
-      }
-    }
-    //Checking if castle is allowed by checking if d1 f1 d8 f8 are attacked (inbetween)
-    for (let i = 0; i <= 7; i += 7) { //check both black and white
-     //if king is in original place and is king
-     //check if left or right of king is attacked, if so don't allow castle
-        if(piece === 6 && ypos === 4 && tempBoard[i][3][2] === false) {
-          tempBoard[i][2][2] = false
-        }
-        if(piece === 6 && ypos === 4 && tempBoard[i][5][2] === false) {
-          tempBoard[i][6][2] = false
-        }
-      }
-      
-    
-    //console.log(tempBoard)
-    setBoard([...tempBoard])
-  }
 
 
   return (
@@ -177,9 +154,10 @@ function movePiece(fromA, fromB, toA, toB) {
         return(
         <tr>{row.map((col, colIndex) => {
           return(
-          <ChessBox board={board} col={col} rowIndex={rowIndex} colIndex={colIndex} possibleMoves={possibleMoves} selected={selected} movePiece={movePiece}>
+          <ChessBox board={board} col={col} rowIndex={rowIndex} colIndex={colIndex} selected={selected} movePiece={movePiece} moveHistory={moveHistory} setBoard={setBoard} setSelected={setSelected}>
             <img alt="chess piece" className="h-10" src={"/chessicons/" + lookUpTable[col[1]][col[0]] +".png"}/>
           </ChessBox>
+          
           )
           
         })

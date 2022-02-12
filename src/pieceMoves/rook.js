@@ -2,7 +2,7 @@
 export default function rook(pieceColor, board, prevPos, goOutOfLoop) {
 let possiblePos = []
     goOutOfLoop = false
-    let newPosR = prevPos
+    
     
         for (let i = 1; i < 8; i++) {
           if (prevPos[0]===7) {
