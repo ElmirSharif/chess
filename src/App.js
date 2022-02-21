@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react'
 import ChessBox from './ChessBox'
 
-import isKingAttacked from './functions/isKingAttacked'
 import clearPossible from './functions/clearPossible'
 import tempMove from './functions/tempMove'
 import compareArray from './functions/compareArray'
-import checkForCheckmate from './functions/checkForCheckmate'
-import checkForStalemate from './functions/checkForStalemate'
+import checkForGameOver from './functions/checkForGameOver'
 
 export default function App() {
   /*
@@ -129,13 +127,7 @@ function movePiece(fromA, fromB, toA, toB) {
   //////////////////////////////////////
   setMoveHistory(prev => [...prev, ...[[pieceCode, toA, toB]]])//adding move to move history
   
-  checkForStalemate(temp, moveHistory)
-  checkForCheckmate( temp, moveHistory)
-  // if(checkForCheckmate( temp, moveHistory)===false){
-  //   console.log(checkForStalemate(temp, moveHistory))
-  // } else {
-  //   console.log("checkmate")
-  // }
+  checkForGameOver(temp, moveHistory) //[0] is no game over, [1, color] is checkmate, [2, color] is stalemate
   setBoard(clearPossible(temp))//updating board and removing possible moves
   setBoardHistory(prev=> [...prev, ...[[temp]]])//adding new board to board History
 }
