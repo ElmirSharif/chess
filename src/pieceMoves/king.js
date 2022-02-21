@@ -1,4 +1,13 @@
-// CASTLING CURRENTLY NOT SUPPORTED
+function hasPieceMoved(moveHistory, pieceCode) {
+    for (let moves = 0; moves < moveHistory.length; moves++) { // check if king has moved
+        const element = moveHistory[moves]
+        if (pieceCode===element[0]) {
+            return true
+        }
+    }
+    return false
+}
+
 export default function king(pieceColor, board, prevPos, moveHistory) {
     let possiblePos = []
     let newPosK = []
@@ -19,65 +28,24 @@ export default function king(pieceColor, board, prevPos, moveHistory) {
         }
     }
     const kingIsWhite = pieceColor===0
-    let kingMoved = false
-    let rook1MovedorDead = false
-    let rook2MovedorDead = false
-    
-    for (let movesK = 0; movesK < moveHistory.length; movesK++) { // check if king has moved
-        const element = moveHistory[movesK];
-        
-        const elementIsWhite = element[0][1]===0
-        if (element[0][0]===("k")&&elementIsWhite===kingIsWhite){
-            kingMoved = true
-        }
-    }
-    for (let movesR1 = 0; movesR1 < moveHistory.length; movesR1++) {
-        const element = moveHistory[movesR1];
-        
-        if (element[0]===("rw1")){
-            rook1MovedorDead = true
-        }
-    }
-    for (let movesR1 = 0; movesR1 < moveHistory.length; movesR1++) {
-        const element = moveHistory[movesR1];
-        
-        if (element[0]===("r"+kingIsWhite ? "w" : "b"+"2")){
-            rook2MovedorDead = true
-        }
-    }
-    
-    
-    
-    
-    //Good Luck Soldier, Hope you make it out alive
-    //check if rook is alive
-/*
-    
-    
-    for (let movesR1 = 0; movesR1 < moveHistory.length; movesR1++) { //check if rook has moved
-        const element = moveHistory[movesR1];
-        if (element[0][0]===("r")&&element[0][1]===kingColor) { //go through move history and look for king and rook
-            if ((element[0][2]===1)||(!board[kingColor==="b" ? 0 : 7][0][1]===4)) {
-                rook1MovedorDead = true
-                
-            }else{
-                rook2MovedorDead = true
-                if (!board[kingColor==="b" ? 0 : 7][7][1]===4) {
-                    rook2MovedorDead = true
-                }
-                
-            }
-        }
-    }
-    console.log(board[kingColor==="b" ? 0 : 7])
-    if(!board[kingColor==="b" ? 0 : 7][0][1]===4){ //check if left rooks exist
-        rook1MovedorDead = true
-    }
 
+    const pieceLetter = kingIsWhite ? "w" : "b"
+    const kingMoved = hasPieceMoved(moveHistory, "k" + pieceLetter + "1")
 
+    const rook1Exists = board[kingIsWhite ? 7 : 0][0][3]==="r"+pieceLetter+"1" 
+    const rook2Exists = board[kingIsWhite ? 7 : 0][7][3]==="r"+pieceLetter+"2" 
 
-    if (kingMoved===false) {
-        if (rook1MovedorDead===false) {
+    const rook1Moved = hasPieceMoved(moveHistory, "r" + pieceLetter + "1")
+    const rook2Moved = hasPieceMoved(moveHistory, "r" + pieceLetter + "2")
+
+    const rook1MovedorDead = !rook1Exists || rook1Moved
+    const rook2MovedorDead = !rook2Exists || rook2Moved
+
+    
+    const leftCastlingIsPossible = !kingMoved&&!rook1MovedorDead
+    const rightCastlingIsPossible = !kingMoved&&!rook2MovedorDead
+
+        if (leftCastlingIsPossible) {
             if (pieceColor===0) {
                 if (board[7][1][0]===2&board[7][2][0]===2&board[7][3][0]===2) {
                     possiblePos.push([7,2])
@@ -89,7 +57,9 @@ export default function king(pieceColor, board, prevPos, moveHistory) {
                 }
             }
         }
-        if (rook2MovedorDead===false) {
+
+
+        if (rightCastlingIsPossible) {
             if (pieceColor===0) {
                 if (board[7][5][0]===2&board[7][6][0]===2) {
                      possiblePos.push([7,6])
@@ -99,9 +69,8 @@ export default function king(pieceColor, board, prevPos, moveHistory) {
                     possiblePos.push([0,6])
                }
             }
-            
         }
-    }*/
+    
     return possiblePos
 }
 

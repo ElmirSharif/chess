@@ -80,9 +80,9 @@ export default function App() {
 
     [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false]],
 
-    [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[0,6 , false, "kw1"],[2, 0, false],[2, 0, false],[2, 0, false]],
+    [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false]],
 
-    [[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false],[2, 0, false]]
+    [[0, 4, false, "rw1"],[2, 0, false],[2, 0, false],[2, 0, false],[0,6 , false, "kw1"],[2, 0, false],[2, 0, false],[0, 4, false, "rw2"]]
     ])
 
 
